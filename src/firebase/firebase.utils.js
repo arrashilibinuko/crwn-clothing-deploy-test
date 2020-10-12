@@ -54,21 +54,29 @@ export const addCollectionAndDocuments = async (
 };
 
 export const convertCollectionsSnapshotToMap = (collection) => {
-  const transformedCollection = collection.docs.map(doc => {
+  const transformedCollection = collection.docs.map((doc) => {
     const { title, items } = doc.data();
     return {
       routeName: encodeURI(title.toLowerCase()),
       id: doc.id,
       title,
-      items
-    }
+      items,
+    };
   });
 
-  return transformedCollection.reduce((accumulator,collection) => {
+  return transformedCollection.reduce((accumulator, collection) => {
     accumulator[collection.title.toLowerCase()] = collection;
     return accumulator;
-  }, {})
-}
+  }, {});
+};
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubcribe = auth.onAuthStateChanged((userAuth) => {
+      unsubcribe(resolve(userAuth));
+    }, reject);
+  });
+};
 
 firebase.initializeApp(config);
 

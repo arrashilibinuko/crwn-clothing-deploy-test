@@ -1,13 +1,26 @@
 import React from 'react';
 import StripeCheckout from 'react-stripe-checkout';
+import axios from 'axios';
 
 const StripeCheckoutButton = ({ price }) => {
     const priceForStripe = price * 100;
     const publishableKey = 'pk_test_51HZnKBL4FxxXmGjnWkegIWYv9Sujt35xavbOwdhJXndLWOZP2THXf5jtyOv8H13Z4djVM9CEAKsp0JznJthPL9X800Yr9bMgkG';
 
     const onToken = token => {
-        console.log(token);
-        alert(`successful`)
+        axios({ 
+            url: 'http://localhost:5000/payment',
+            method: 'post',
+            data: {
+                amount: priceForStripe,
+                token
+            } 
+         }).then(response => {
+             console.log(response)  
+             alert('sucessful payment')
+         }).catch(error => {
+             console.log('Payment error: ' + error);
+             alert('There was an issue with payment ')
+         })
     }
 
     return (
@@ -16,7 +29,6 @@ const StripeCheckoutButton = ({ price }) => {
             name='CWN Clothing'
             billingAddress
             shippingAddress
-            image='https://sendeyo.com/up/d/f3eb2117da'
             description={`Your total is $${price}`}
             amount={priceForStripe}
             panelLabel='paynow'
